@@ -1,14 +1,10 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Solution {
-	static int answer;
-	static int[] arr;
-	static boolean[] visited;
-	static int n;
-	static int m;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -18,11 +14,10 @@ public class Solution {
 		
 		for (int i = 1; i <= tc; i++) {
 			st = new StringTokenizer(br.readLine());
-			n = Integer.parseInt(st.nextToken());
-			m = Integer.parseInt(st.nextToken());
+			int n = Integer.parseInt(st.nextToken());
+			int m = Integer.parseInt(st.nextToken());
 			
-			arr = new int[n];
-			visited = new boolean[n];
+			int[] arr = new int[n];
 			
 			st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < n; j++) {
@@ -30,28 +25,29 @@ public class Solution {
 				arr[j] = num;
 			}
 			
-			answer = 0;
-			dfs(0, 0, 0);
+			int answer = 0;
+			Arrays.sort(arr);
+			
+			int left = 0;
+			int right = n-1;
+			
+			while(left < right) {
+				int total = 0;
+				total = arr[left] + arr[right];
+				
+				if(total <= m) {
+					answer = Math.max(answer, total);
+					left++;
+				}else {
+					right --;
+				}
+				
+				
+			}
+			
 			if(answer == 0) sb.append("#").append(i).append(" ").append(-1).append("\n");
 			else sb.append("#").append(i).append(" ").append(answer).append("\n");
 		}
 		System.out.println(sb);
-	}
-	
-	public static void dfs(int count, int now, int index) {
-		if(now > m) return;
-		
-		if(count == 2) {
-			answer = Math.max(answer, now);
-			return;
-		}
-		
-		for (int i = index; i < n; i++) {
-			if(!visited[i]) {
-				visited[i] = true;
-				dfs(count+1, arr[i] + now, i);
-				visited[i] = false;
-			}
-		}
 	}
 }
