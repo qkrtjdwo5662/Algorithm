@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Solution {
@@ -14,12 +14,11 @@ public class Solution {
             st = new StringTokenizer(br.readLine());
             int n = Integer.parseInt(st.nextToken()); // 원본 암호문 개수
 
-            LinkedList<Integer> linkedList = new LinkedList<>();
-
+            ArrayList<Integer> list = new ArrayList<>(); 
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < n; j++) {
                 int num = Integer.parseInt(st.nextToken());
-                linkedList.addLast(num);
+                list.add(num);
             }
             st = new StringTokenizer(br.readLine());
             int m = Integer.parseInt(st.nextToken()); // 명령어의 개수
@@ -36,7 +35,7 @@ public class Solution {
 
                     for (int k = 0; k < y; k++) {
                         int s = Integer.parseInt(st.nextToken());
-                        linkedList.add(k + x, s);
+                        list.add(k + x, s);
                     }
                 } else if (opr.equals("D")) {
                     // x, y
@@ -46,7 +45,7 @@ public class Solution {
                     int y = Integer.parseInt(st.nextToken());
 
                     for (int k = 0; k < y; k++) {
-                        linkedList.remove(k + x);
+                    	list.remove(k + x);
                     }
                 } else if (opr.equals("A")) {
                     // y, s
@@ -54,7 +53,7 @@ public class Solution {
                     int y = Integer.parseInt(st.nextToken());
                     for (int k = 0; k < y; k++) {
                         int s = Integer.parseInt(st.nextToken());
-                        linkedList.addLast(s);
+                        list.add(s);
                     }
 
                 }
@@ -62,7 +61,7 @@ public class Solution {
 
             sb.append("#").append(i).append(" ");
             for (int j = 0; j < 10; j++) {
-                sb.append(linkedList.get(j)).append(" ");
+                sb.append(list.get(j)).append(" ");
             }
             sb.append("\n");
 
