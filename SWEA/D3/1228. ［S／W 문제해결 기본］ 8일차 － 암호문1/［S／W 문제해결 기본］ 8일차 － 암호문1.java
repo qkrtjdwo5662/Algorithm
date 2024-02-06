@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
@@ -17,12 +18,13 @@ public class Solution {
 			st = new StringTokenizer(br.readLine());
 			int n = Integer.parseInt(st.nextToken());
 			
-			LinkedList<Integer> linkedList = new LinkedList<>();
-
+//			LinkedList<Integer> linkedList = new LinkedList<>();
+			ArrayList<Integer> list = new ArrayList<>(); 
+			
 			st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < n; j++) {
 				int num = Integer.parseInt(st.nextToken());
-				linkedList.add(num);
+				list.add(num);
 			}
 			
 			st = new StringTokenizer(br.readLine());
@@ -36,13 +38,13 @@ public class Solution {
 				
 				for (int k = 0; k < y; k++) {
 					int num = Integer.parseInt(st.nextToken());
-					linkedList.add(x+k, num);
+					list.add(x+k, num);
 				}
 			
 			}
 			sb.append("#").append(i).append(" ");
 			for (int j = 0; j < 10; j++) {
-				sb.append(linkedList.get(j)).append(" ");
+				sb.append(list.get(j)).append(" ");
 			}
 			sb.append("\n");
 		}
