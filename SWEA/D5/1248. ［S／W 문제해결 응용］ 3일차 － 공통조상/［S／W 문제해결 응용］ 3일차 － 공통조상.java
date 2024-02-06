@@ -9,7 +9,6 @@ import java.util.StringTokenizer;
 public class Solution {
 	static int n;
 	static ArrayList<Integer>[] adjList;
-	static HashSet<Integer> set;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -55,18 +54,18 @@ public class Solution {
 	}
 	
 	static int findParent(int a, int b, int[] parents) {
-		set = new HashSet<>();
+		boolean[] visited = new boolean[n+1];
 		
 		while(a != 0) {
+			visited[a] = true;
 			a = parents[a];
-			set.add(a);
 		}
 		
 		while(b != 0) {
-			b = parents[b];
-			if(set.contains(b)) {
+			if(visited[b]) {
 				return b;
 			}
+			b = parents[b];
 		}
 		
 		
