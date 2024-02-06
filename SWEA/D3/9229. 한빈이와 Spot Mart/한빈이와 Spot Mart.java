@@ -31,14 +31,14 @@ public class Solution {
 			}
 			
 			answer = 0;
-			dfs(0, 0);
+			dfs(0, 0, 0);
 			if(answer == 0) sb.append("#").append(i).append(" ").append(-1).append("\n");
 			else sb.append("#").append(i).append(" ").append(answer).append("\n");
 		}
 		System.out.println(sb);
 	}
 	
-	public static void dfs(int count, int now) {
+	public static void dfs(int count, int now, int index) {
 		if(now > m) return;
 		
 		if(count == 2) {
@@ -46,10 +46,10 @@ public class Solution {
 			return;
 		}
 		
-		for (int i = 0; i < n; i++) {
+		for (int i = index; i < n; i++) {
 			if(!visited[i]) {
 				visited[i] = true;
-				dfs(count+1, arr[i] + now);
+				dfs(count+1, arr[i] + now, i);
 				visited[i] = false;
 			}
 		}
