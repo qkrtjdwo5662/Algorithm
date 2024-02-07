@@ -9,6 +9,7 @@ public class Solution {
     static int n;
     static int[][] board;
     static int maxCount;
+    static int minNum;
     static ArrayList<Integer> list;
 
     static int[] ry = {1, 0, -1, 0};
@@ -27,7 +28,7 @@ public class Solution {
             n = Integer.parseInt(st.nextToken());
             board = new int[n][n];
             maxCount = 0;
-            
+            minNum = 1_000_000;
             list = new ArrayList<>();
             for (int j = 0; j < n; j++) {
                 st = new StringTokenizer(br.readLine());
@@ -39,17 +40,9 @@ public class Solution {
 
             for (int j = 0; j < n; j++) {
                 for (int k = 0; k < n; k++) {
-                    dfs(new int[]{j, k}, 1, 1, board[j][k]);
+                    dfs(new int[]{j, k}, 1, board[j][k]);
                 }
             }
-
-            for (int j = 0; j < n; j++) {
-                for (int k = 0; k < n; k++) {
-                    dfs(new int[]{j, k}, 1, 2, board[j][k]);
-                }
-            }
-            Collections.sort(list);
-            int minNum = list.get(0);
             sb.append("#").append(i).append(" ");
             sb.append(minNum).append(" ").append(maxCount).append("\n");
 
@@ -60,15 +53,14 @@ public class Solution {
 
     }
 
-    static void dfs(int[] now, int count, int opr, int start){
-//        if(count == n*n) return;
+    static void dfs(int[] now, int count, int start){
+        if(maxCount < count){
+            maxCount = count;
+            minNum = start;
+        }else if(maxCount == count && minNum > start){
+            minNum = start;
+        }
 
-        if(opr == 1){
-            maxCount = Math.max(maxCount, count);
-        }
-        if(opr == 2){
-            if(count == maxCount) list.add(start);
-        }
 
 
         for (int i = 0; i < 4; i++) {
@@ -78,7 +70,7 @@ public class Solution {
             if(r < 0 || c<0 || r>= n || c>= n) continue;
 
             if(board[r][c] == board[now[0]][now[1]] + 1){
-                dfs(new int[]{r, c}, count+1, opr, start);
+                dfs(new int[]{r, c}, count+1, start);
             }
         }
 
