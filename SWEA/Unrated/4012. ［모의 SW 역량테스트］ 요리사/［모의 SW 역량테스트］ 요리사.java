@@ -47,7 +47,7 @@ public class Solution {
         if(depth == n/2){
             ArrayList<Integer> listB = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                if(!list.contains(i)){
+                if(!visited[i]){
                     listB.add(i);
                 }
             }
