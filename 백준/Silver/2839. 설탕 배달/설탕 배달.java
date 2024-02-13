@@ -9,21 +9,20 @@ public class Main {
         int n = Integer.parseInt(br.readLine());
 
         int answer = Integer.MAX_VALUE;
+        int[] count = new int[6];	
 
+        count[5] = n/5;
+        
 
-        int count_five = 0;
-        count_five = n/5;
-        int count_three = 0;
-
-        while(count_five >= 0){
+        while(count[5] >= 0){
             int target = n;
-            target = target - count_five*5;
-            if(target%3 ==0){
-                count_three = target/3;
-                answer = Math.min(answer, count_five + count_three);
+            target = target - count[5]*5;
+            
+            if(target % 3 ==0){
+                count[3] = target/3;
+                answer = Math.min(answer, count[5] + count[3]);
             }
-
-            count_five--;
+            count[5] --;
         }
 
         if(answer == Integer.MAX_VALUE){
