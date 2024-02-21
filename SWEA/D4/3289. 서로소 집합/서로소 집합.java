@@ -36,8 +36,8 @@ public class Solution {
 					union(a, b);
 				}else if(opr == 1) {
 					if(find(a) == find(b)) {
-						sb.append("1");
-					}else sb.append("0");
+						sb.append(1);
+					}else sb.append(0);
 				}
 			}
 			sb.append("\n");
