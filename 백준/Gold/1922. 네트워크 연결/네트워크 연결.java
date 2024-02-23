@@ -1,90 +1,79 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static class Edge{
-		int start;
+	static class Node{
 		int end;
-		int weight;
+		int cost;
 		
-		public Edge(int start, int end, int weight) {
-			this.start = start;
+		public Node(int end, int cost) {
 			this.end = end;
-			this.weight = weight;
+			this.cost = cost;
 		}
 	}
 	
-	static int[] parents;
-	static Edge[] edgeList;
+	static ArrayList<Node>[] adjList;
+	static boolean[] visited;
+	static int answer;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		StringBuilder sb = new StringBuilder();
 		
-		int n = Integer.parseInt(st.nextToken()); // 컴퓨터 수 
+		int n = Integer.parseInt(st.nextToken());
 		
 		st = new StringTokenizer(br.readLine());
-		int m = Integer.parseInt(st.nextToken()); // 선의 수 
+		int m = Integer.parseInt(st.nextToken());
 		
-		parents = new int[n + 1];
+		adjList = new ArrayList[n+1]; 
 		for (int i = 1; i <= n; i++) {
-			parents[i] = i;
+			adjList[i] = new ArrayList<>();
 		}
-		
-		edgeList = new Edge[m];
 		
 		for (int i = 0; i < m; i++) {
 			st = new StringTokenizer(br.readLine());
+			
 			int u = Integer.parseInt(st.nextToken());
-			int v = Integer.parseInt(st.nextToken());			
-			int w = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			int cost = Integer.parseInt(st.nextToken());
 			
-			Edge edge = new Edge(u, v, w);
-			edgeList[i] = edge;
+			adjList[u].add(new Node(v, cost));
+			adjList[v].add(new Node(u, cost));
 		}
 		
-		Arrays.sort(edgeList, (o1, o2) -> {
-			return Integer.compare(o1.weight, o2.weight);
-		});
-		
-		int answer = 0;
-		int count = 0;
-		for (int i = 0; i < m; i++) {
-			Edge now = edgeList[i];
-			
-			int start = now.start;
-			int end = now.end;
-			int weight = now.weight;
-			
-			if(union(start, end)) {
-				answer += weight;
-				count ++;
-			}
-			
-			if(count == n-1) break;
-		}
-		
+		visited = new boolean[n+1];
+		answer = 0;
+		prim(1);
 		sb.append(answer).append("\n");
 		System.out.println(sb);
 	}
 	
-	static boolean union(int a, int b) {
-		int x = find(a);
-		int y = find(b);
+	static void prim(int start) {
+		PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) ->  {
+			return Integer.compare(o1.cost, o2.cost);
+		});
+		pq.add(new Node(start, 0));
 		
-		if(x == y) return false;
-		else {
-			parents[x] = y;
-			return true;
+		while(!pq.isEmpty()) {
+			Node now = pq.poll();
+			
+			if(visited[now.end]) continue;
+			visited[now.end] = true;
+			
+			answer += now.cost;
+			
+			for (int i = 0; i < adjList[now.end].size(); i++) {
+				Node next = adjList[now.end].get(i);
+				
+				if(!visited[next.end]) {
+					pq.add(next);
+				}
+			}
 		}
-	}
-	
-	static int find(int a) {
-		if(parents[a] == a) return parents[a];
-		return parents[a] = find(parents[a]);
 		
 	}
 }
