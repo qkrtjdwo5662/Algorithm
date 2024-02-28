@@ -7,7 +7,6 @@ public class Main {
     static int n;
     static int[][] board;
     static int count;
-    static boolean[][] visited;
     static int[] ry = {0, 1, 1};
     static int[] rx = {1, 0, 1};
 
@@ -25,33 +24,31 @@ public class Main {
             for (int j = 0; j < n; j++) {
 
                 int num = Integer.parseInt(st.nextToken());
-                if(num != 0) {
-                    board[i][j] = num;
-                }
+                board[i][j] = num;
             }
         }
         // 0 빈칸 // 1 벽
 
         count = 0;
 
-        dfs(new int[] {0, 1}, 0);
+        dfs(0, 1,0);
         sb.append(count).append("\n");
         System.out.println(sb);
     }
 
-    static void dfs(int[] now, int d){
-        if(now[0] == n-1 && now[1] == n-1){
+    static void dfs(int y, int x, int d){
+        if(y == n-1 && x == n-1){
             count++;
             return;
         }
 
         for (int i = 0; i < 3; i++) {
             if( (d == 0 && i ==1) || (d == 1 && i == 0) ) continue;
-            // 가로일때 세로
-            // 세로일때 가로
+            // 가로일때 세로 제외
+            // 세로일때 가로 제외
 
-            int r = now[0] + ry[i];
-            int c = now[1] + rx[i];
+            int r = y + ry[i];
+            int c = x + rx[i];
 
             if(r < 0 || c < 0 || r>= n || c>= n) continue;
 
@@ -61,7 +58,7 @@ public class Main {
                 if(board[r][c-1] == 1 || board[r-1][c] == 1) continue;
             }
 
-            dfs(new int[]{r, c}, i);
+            dfs(r, c, i);
 
         }
     }
