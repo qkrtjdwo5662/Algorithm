@@ -7,7 +7,6 @@ public class Main {
 	static int n;
 	static int[][] board;
 	static int count;
-	static boolean[][] visited;
 	static int[] ry = {0, 1, 1};
 	static int[] rx = {1, 0, 1};
 	
@@ -32,12 +31,7 @@ public class Main {
 		}
 		// 0 빈칸 // 1 벽
 		
-		count = 0;
-		visited = new boolean[n][n];
-		
-		visited[0][0] = true;
-		visited[0][1] = true;
-		
+		count = 0;		
 		go(new int[] {0, 1}, 0);
 		System.out.println(count);
 	}
