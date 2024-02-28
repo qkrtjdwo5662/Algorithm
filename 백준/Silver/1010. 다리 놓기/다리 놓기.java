@@ -13,11 +13,10 @@ public class Main {
 		
 		for (int t = 0; t < tc; t++) {
 			st = new StringTokenizer(br.readLine());
-			
 			int n = Integer.parseInt(st.nextToken());
 			int m = Integer.parseInt(st.nextToken());
 			
-			long[][] dp = new long[m + 1][m + 1];
+			int[][] dp = new int[m + 1][m + 1];
 			
 			for (int i = 0; i <= m; i++) {
 				for (int j = 0; j <= i; j++) {
