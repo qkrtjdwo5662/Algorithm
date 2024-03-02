@@ -1,65 +1,58 @@
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int n;
-    static int[][] board;
-    static int count;
-    static int[] ry = {0, 1, 1};
-    static int[] rx = {1, 0, 1};
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         StringBuilder sb = new StringBuilder();
 
-        n = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(st.nextToken());
 
-        board = new int[n][n];
+        int[][] board = new int[n][n];
 
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < n; j++) {
-
-                int num = Integer.parseInt(st.nextToken());
-                board[i][j] = num;
+                board[i][j] = Integer.parseInt(st.nextToken());
             }
         }
-        // 0 빈칸 // 1 벽
 
-        count = 0;
-
-        dfs(0, 1,0);
-        sb.append(count).append("\n");
-        System.out.println(sb);
-    }
-
-    static void dfs(int y, int x, int d){
-        if(y == n-1 && x == n-1){
-            count++;
+        // 가로 -> 가로, 대각선
+        // 세로 -> 세로, 대각선
+        // 대각선 -> 가로, 세로, 대각선
+        if(board[n-1][n-1] == 1){
+            System.out.println(0);
             return;
         }
+        long[][][] dp = new long[n][n][3];
 
-        for (int i = 0; i < 3; i++) {
-            if( (d == 0 && i ==1) || (d == 1 && i == 0) ) continue;
-            // 가로일때 세로 제외
-            // 세로일때 가로 제외
+        dp[0][1][0] = 1;
 
-            int r = y + ry[i];
-            int c = x + rx[i];
 
-            if(r < 0 || c < 0 || r>= n || c>= n) continue;
 
-            if(board[r][c] == 1) continue;
 
-            if(i== 2){
-                if(board[r][c-1] == 1 || board[r-1][c] == 1) continue;
+        for (int i = 0; i < n; i++) {
+            for (int j = 2; j < n; j++) {
+                if(board[i][j] == 1) continue;
+
+                dp[i][j][0] = dp[i][j - 1][0] + dp[i][j-1][2];
+                if(i == 0) continue;
+
+                dp[i][j][1] = dp[i-1][j][1] + dp[i-1][j][2];
+
+                if(board[i][j - 1] == 0 && board[i-1][j] == 0){
+                    dp[i][j][2]  = dp[i-1][j-1][0] + dp[i-1][j-1][1] + dp[i-1][j-1][2];
+                }
+
             }
-
-            dfs(r, c, i);
-
         }
+
+        long answer = dp[n-1][n-1][0]  +dp[n-1][n-1][1] + dp[n-1][n-1][2];
+        sb.append(answer).append("\n");
+        System.out.println(sb);
+        
     }
 }
