@@ -23,23 +23,31 @@ public class Main {
         answer = Math.abs(n - now);
         len = String.valueOf(n).length();
         flag = true;
-        if(m == 0){
-            moveChanel(0, 0);
 
-        }else{
+        if(m != 0){
             st = new StringTokenizer(br.readLine());
             for (int i = 0; i < m; i++) {
                 int num = Integer.parseInt(st.nextToken());
                 broken[num] = true;
             }
-            moveChanel(0, 0);
         }
+        if(now == n){
+            System.out.println(0);
+            return;
+        }
+        moveChanel(0, 0);
         sb.append(answer).append("\n");
         System.out.println(sb);
 
     }
 
     static void moveChanel(int now, int depth){
+        if(depth > 0){
+            int count = String.valueOf(now).length() + Math.abs(now - n);
+            answer = Math.min(answer, count);
+        }
+        
+
         if(depth == 6){
             return;
         }
@@ -47,8 +55,6 @@ public class Main {
         for (int i = 0; i < 10; i++) {
             if(!broken[i]){
                 int next = now * 10 + i;
-                int count = String.valueOf(next).length() + Math.abs(next - n);
-                answer = Math.min(answer, count);
                 moveChanel(next, depth + 1);
             }
         }
