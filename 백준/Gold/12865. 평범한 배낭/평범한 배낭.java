@@ -1,48 +1,58 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-	static class Goods{
+	
+	static class Good{
 		int weight;
 		int value;
 		
-		public Goods(int weight, int value) {
+		public Good(int weight, int value) {
 			this.weight = weight;
 			this.value = value;
 		}
+		
 	}
+	
+	static int n;
+	static int k;
+	static int[][] dp;
+	static Good[] goods;
 	public static void main(String[] args) throws IOException {
+		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		StringBuilder sb = new StringBuilder();
 		
-		int n = Integer.parseInt(st.nextToken());
-		int k = Integer.parseInt(st.nextToken());
+		n = Integer.parseInt(st.nextToken());
+		k = Integer.parseInt(st.nextToken());
 		
-		int[][] dp = new int[n+1][k+1];
-		Goods[] goodsArr = new Goods[n+1];
-		for (int i = 1; i <= n; i++) {
+		dp = new int[n + 1][k + 1];
+		
+		goods = new Good[n];
+		
+		for (int i = 0; i < n; i++) {
 			st = new StringTokenizer(br.readLine());
 			
-			int w = Integer.parseInt(st.nextToken());
-			int v = Integer.parseInt(st.nextToken());
+			int weight = Integer.parseInt(st.nextToken());
+			int value = Integer.parseInt(st.nextToken());
 			
-			goodsArr[i] = new Goods(w, v);
+			Good good = new Good(weight, value);
+			goods[i] = good;
 		}
 		
+		
 		for (int i = 1; i <= n; i++) {
-			Goods goods = goodsArr[i];
+			Good now = goods[i-1];
 			
-			for (int j = 1; j <= k; j++) {
+			for (int j = 0; j <= k; j++) {
 				dp[i][j] = dp[i-1][j];
 				
-				if(j >= goods.weight) {
-					dp[i][j] = Math.max(dp[i][j], dp[i-1][j - goods.weight] + goods.value);
-				}	
-				
+				if(j>= now.weight) {
+					dp[i][j] = Math.max(dp[i-1][j-now.weight] + now.value, dp[i][j]);
+				}
 			}
 		}
 		
