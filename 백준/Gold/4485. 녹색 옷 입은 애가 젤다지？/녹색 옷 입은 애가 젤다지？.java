@@ -67,8 +67,8 @@ public class Main {
 			
 			if(now[0] == n-1 && now[1] == n-1) return dist[n-1][n-1];
 			
-			if(visited[now[0]][now[1]]) continue;
-			visited[now[0]][now[1]] = true;
+//			if(visited[now[0]][now[1]]) continue;
+//			visited[now[0]][now[1]] = true;
 			
 			for (int i = 0; i < 4; i++) {
 				int r = now[0] + ry[i];
