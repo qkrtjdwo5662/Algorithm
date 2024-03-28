@@ -17,26 +17,26 @@ public class Solution {
 			
 			int n = Integer.parseInt(st.nextToken());
 			
-			int[] arr = new int[n + 1];
+			int[] arr = new int[n];
 			int[] dp = new int[n + 1];
 			
 			st = new StringTokenizer(br.readLine());
-			for (int i = 1; i <= n; i++) {
+			for (int i = 0; i < n; i++) {
 				arr[i] = Integer.parseInt(st.nextToken());
 			}
 			
-			for (int i = 1; i <= n; i++) {
-				int num = arr[i];
+			for (int i = 0; i < n; i++) {
+				dp[i] = 1;
 				
 				for (int j = 0; j < i; j++) {
-					if(num > arr[j]) {
+					if(arr[i] > arr[j]) {
 						dp[i] = Math.max(dp[i], dp[j] + 1);
 					}
 				}
 			}
 			
 			int max = 0;
-			for (int i = 1; i <= n; i++) {
+			for (int i = 0; i <= n; i++) {
 				max = Math.max(max, dp[i]);
 			}
 			
