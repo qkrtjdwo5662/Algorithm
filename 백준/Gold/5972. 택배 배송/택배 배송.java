@@ -70,6 +70,8 @@ public class Main {
             if(visited[now.end]) continue;
             visited[now.end] = true;
 
+            if(now.end == n) return dist[n];
+
             for (int i = 0; i < adjList[now.end].size(); i++) {
                 Node next = adjList[now.end].get(i);
                 if(dist[next.end] > dist[now.end] + next.weight){
