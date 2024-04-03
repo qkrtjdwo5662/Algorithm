@@ -31,16 +31,18 @@ public class Solution {
 			
 			board = new int[h][w];
 			answer = 987654321;
-			
+			int count = 0;
 			for (int i = 0; i < h; i++) {
 				st = new StringTokenizer(br.readLine());
 				for (int j = 0; j < w; j++) {
 					int num = Integer.parseInt(st.nextToken());
 					board[i][j] = num;
+					
+					if(num > 0) count ++;
 				}
 			}
 			
-			go(0, board);
+			go(0, board, count);
 			
 			sb.append("#").append(t).append(" ").append(answer).append("\n");
 		}
@@ -48,13 +50,13 @@ public class Solution {
 	}
 	
 	
-	static void go(int depth, int[][] board) {
+	static void go(int depth, int[][] board, int count) {
 		if(depth ==  n) {
-			answer = Math.min(answer, countBrick(board));
+			answer = Math.min(answer, count);
 			return;
 		}
 		
-		if(countBrick(board) == 0) {
+		if(count == 0) {
 			answer = 0;
 			return;
 		}
@@ -67,10 +69,10 @@ public class Solution {
 			if(y == -1) continue;
 			
 			int[][] newBoard = copyBoard(board);
-			broke(y, x, newBoard);
+			int remain = count - broke(y, x, newBoard);
 			int[][] downBoard = downBoard(newBoard);
 			
-			go(depth +1, downBoard);
+			go(depth +1, downBoard, remain);
 		}
 	}
 	
@@ -114,9 +116,10 @@ public class Solution {
 		return newBoard;
 	}
 	
-	static void broke(int y, int x, int[][] board) {
+	static int broke(int y, int x, int[][] board) {
 		boolean[][] visited = new boolean[h][w];
 		ArrayDeque<int[]> deque = new ArrayDeque<>();
+		int count = 0;
 		
 		visited[y][x] = true;
 		deque.addLast(new int[] {y, x});
@@ -130,6 +133,7 @@ public class Solution {
 			
 			if(board[ny][nx] == 1) {
 				board[ny][nx] = 0;
+				count ++;
 			}else if(board[ny][nx] > 1) {
 				
 				for (int i = 0; i < 4; i++) {
@@ -157,10 +161,12 @@ public class Solution {
 				}
 				
 				board[ny][nx] = 0;
+				count ++;
 			}
 			
 			
 		}
+		return count;
 		
 	}
 	
