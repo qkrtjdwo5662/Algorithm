@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Stack;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -11,36 +11,36 @@ public class Main {
         String s = br.readLine();
         String bomb = br.readLine();
 
-        Stack<Character> stack = new Stack<>();
-
+        ArrayList<Character> list = new ArrayList<>();
         for (int i = 0; i < s.length(); i++) {
-            stack.push(s.charAt(i)); // 일단 푸쉬
+            list.add(s.charAt(i));
 
-            if(stack.size() >= bomb.length()){ // 체크 시작
-                boolean check = true;
+            boolean check = true;
+            String ss = "";
+            if(list.size() >= bomb.length()){
                 for (int j = 0; j < bomb.length(); j++) {
-                    if(stack.get(stack.size() - bomb.length() + j) != bomb.charAt(j)){
-                        check =false;
+                    if(list.get(list.size() - bomb.length() + j) != bomb.charAt(j)) {
+                        check = false;
                         break;
                     }
                 }
+
                 if(check){
                     for (int j = 0; j < bomb.length(); j++) {
-                        stack.pop();
+                    list.remove(list.size() -1);
                     }
                 }
             }
         }
-        for (int i = 0; i < stack.size(); i++) {
-            sb.append(stack.get(i));
-        }
 
-        if(sb.length()!=0){
-            System.out.println(sb);
-        }else{
+        if(list.size() == 0){
             System.out.println("FRULA");
+        }else{
+            for (int i = 0; i < list.size(); i++) {
+                sb.append(list.get(i));
+            }
         }
 
+        System.out.println(sb);
     }
 }
-
