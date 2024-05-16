@@ -5,9 +5,8 @@ import java.util.StringTokenizer;
 
 public class Main {
     static class Egg{
-        int hp;
-        int weight;
-
+        int hp; // 내구도
+        int weight; // 무게
         public Egg(int hp, int weight){
             this.hp = hp;
             this.weight = weight;
@@ -15,8 +14,8 @@ public class Main {
     }
 
     static Egg[] eggArr;
-    static int answer;
     static int n;
+    static int answer;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -24,62 +23,64 @@ public class Main {
 
         n = Integer.parseInt(st.nextToken());
         eggArr = new Egg[n];
-        answer = 0;
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             int hp = Integer.parseInt(st.nextToken());
             int weight = Integer.parseInt(st.nextToken());
 
             Egg egg = new Egg(hp, weight);
-
             eggArr[i] = egg;
         }
 
-        backtrack(0);
+        answer = 0;
+        backtrack(0, 0);
         sb.append(answer).append("\n");
         System.out.println(sb);
-
     }
 
-    static void backtrack(int depth){
-        if(depth == n ){
-            int count = 0;
-            for (int i = 0; i < n; i++) {
-                if(eggArr[i].hp <= 0) count ++;
-            }
-
+    static void backtrack(int depth, int count){
+        if(depth == n){
             answer = Math.max(answer, count);
             return;
         }
 
         Egg now = eggArr[depth];
 
-        if(now.hp <= 0) { // 손에 든거 깨졌으면 넘김
-            backtrack(depth + 1);
-        }else{
-            boolean flag = false;
-            for (int i = 0; i < n; i++) {
-                if(i == depth) continue;
+        if(now.hp <= 0){
+            backtrack(depth + 1, count);
+            return;
+        }
+        boolean flag = false; // 한개라도 깨는지 체크
+        for (int i = 0; i < n; i++) {
+            int zero = 0;
+            if(i == depth) continue;
 
-                Egg egg = eggArr[i];
-                if (egg.hp > 0) {
-                    flag = true;
-                    int temp1 = now.hp;
-                    int temp2 = egg.hp;
+            Egg egg = eggArr[i];
+            if(egg.hp <= 0) continue;
 
-                    now.hp -= egg.weight;
-                    egg.hp -= now.weight;
+            flag = true;
+            int temp1 = now.hp;
+            int temp2 = egg.hp;
 
-                    backtrack(depth + 1);
+            now.hp -= egg.weight;
+            egg.hp -= now.weight;
 
-                    now.hp = temp1;
-                    egg.hp = temp2;
-                }
+            if(now.hp <= 0){
+                now.hp = 0;
+                zero ++;
             }
 
-            if(!flag) backtrack(depth + 1);
+            if(egg.hp <= 0){
+                egg.hp = 0;
+                zero ++;
+            }
+
+            backtrack(depth + 1, count + zero);
+
+            now.hp = temp1;
+            egg.hp = temp2;
         }
 
-
+        if(!flag) backtrack(depth +1, count);
     }
 }
