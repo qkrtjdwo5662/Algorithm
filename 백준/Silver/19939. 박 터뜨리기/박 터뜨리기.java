@@ -12,16 +12,15 @@ public class Main {
         int n = Integer.parseInt(st.nextToken());
         int k = Integer.parseInt(st.nextToken());
 
-        int min = k * (k + 1) /2;
-
-        if(n < min){
+        int min = k*(k + 1)/2;
+        if(min > n){ // 최소 합보다 낮으면 -1
             sb.append(-1).append("\n");
         }else{
-            int remain = n - min; // 일단 한번 분배
             int answer = k-1;
 
-            if(remain % k != 0) answer ++;
+            int remain = n - min;
 
+            if(remain % k > 0) answer++;
             sb.append(answer).append("\n");
         }
 
