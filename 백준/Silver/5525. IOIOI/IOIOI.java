@@ -1,40 +1,35 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        StringBuilder sb = new StringBuilder();
+        
+        int n = Integer.parseInt(br.readLine());
+        int m = Integer.parseInt(br.readLine());
+        String s = br.readLine();
 
-        int n = Integer.parseInt(st.nextToken());
-
-        st = new StringTokenizer(br.readLine());
-        int m = Integer.parseInt(st.nextToken());
-
-        st = new StringTokenizer(br.readLine());
-        String s = st.nextToken();
-
-        StringBuilder compare = new StringBuilder("IOI");
-        for (int i = 1; i < n ; i++) {
-            compare.append("OI");
-        }
-
+        String pattern = "IOI";
         int answer = 0;
+        int count = 0;
 
-        // 10101 10
-        for (int i = 0; i < s.length() - compare.length() + 1; i++) {
-            StringBuilder compare2 = new StringBuilder();
-            for (int j = 0; j < compare.length(); j++) {
-                compare2.append(s.charAt(i+j));
+        for (int i = 0; i < m - 1; i++) {
+            if (s.charAt(i) == 'I' && s.charAt(i + 1) == 'O') {
+                int j = i + 1;
+                while (j + 1 < m && s.charAt(j) == 'O' && s.charAt(j + 1) == 'I') {
+                    j += 2;
+                    count++;
+                    if (count == n) {
+                        answer++;
+                        count--;
+                    }
+                }
+                count = 0; // Reset count if the pattern breaks
+                i = j - 1;
             }
-            if(compare2.toString().equals(compare.toString())) answer++;
         }
 
-        sb.append(answer).append("\n");
-        System.out.println(sb);
-
+        System.out.println(answer);
     }
 }
