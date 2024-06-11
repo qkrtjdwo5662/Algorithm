@@ -11,17 +11,14 @@ class Solution {
         int index = 0;
         while(index < n && !pq.isEmpty()){
             int now = pq.poll();
-            
             now = now - 1;
             if(now > 0) pq.add(now);
-            
             index ++;
         }
         
         
         while(!pq.isEmpty()){
             int now = pq.poll();
-            
             answer += Math.pow(now, 2);
         }
         
