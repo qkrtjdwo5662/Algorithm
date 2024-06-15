@@ -43,13 +43,7 @@ public class Main {
     static void dfs(int ny, int nx, int d, int sum){
         if(ny == n){
             answer = Math.min(answer, sum);
-        } else if(ny == 0){
-            for (int i = 0; i < 3; i++) {
-                if(isArea(nx + rx[i])){
-                    dfs(ny + 1, nx + rx[i], i, sum + arr[ny][nx]);
-                }
-            }
-        }else{
+        } else{
             for (int i = 0; i < 3; i++) {
                 if(isArea(nx + rx[i]) && i != d){
                     dfs(ny + 1, nx + rx[i], i, sum  + arr[ny][nx]);
