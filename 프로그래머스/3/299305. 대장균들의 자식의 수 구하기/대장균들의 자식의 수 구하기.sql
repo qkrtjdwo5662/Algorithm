@@ -1,16 +1,18 @@
 -- 코드를 작성해주세요
-# select PARENT_ID, ifnull(count(PARENT_ID), 0) as "CHILD_COUNT"
-# from ECOLI_DATA
-# group by PARENT_ID
-
-select a.ID, ifnull(b.CHILD_COUNT, 0) as "CHILD_COUNT"
-from ECOLI_DATA a
+select d.ID, 
+(
+    case     
+    when A.count is null then 0
+    else A.count
+    end  
+)as 'CHILD_COUNT'
+from ECOLI_DATA d
 left join 
 (
-    select PARENT_ID as ID, count(PARENT_ID) as "CHILD_COUNT"
+    select PARENT_ID, COUNT(PARENT_ID) as 'count'
     from ECOLI_DATA
+    where PARENT_ID is not null
     group by PARENT_ID
-    having PARENT_ID is not null
-) as b
-on a.ID = b.ID
-order by a.ID;
+) as A
+on d.ID = A.PARENT_ID
+order by d.ID;
