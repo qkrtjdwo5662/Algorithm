@@ -1,34 +1,21 @@
--- 코드를 작성해주세요
-# select a.ID, b.FISH_NAME, a.LENGTH
-# from 
-# (
-#     select b.ID, a.FISH_TYPE, a.LENGTH
-#     from(
-#         select FISH_TYPE, MAX(LENGTH) LENGTH
-#         from FISH_INFO 
-#         group by FISH_TYPE
-#     )  a
-#     left join 
-#     (
-#         select ID, FISH_TYPE, LENGTH
-#         from FISH_INFO
-#     ) as b
-#     on a.FISH_TYPE = b.FISH_TYPE and a.LENGTH = b.LENGTH
-# ) as a
-# left join FISH_NAME_INFO b
-# on a.FISH_TYPE = b.FISH_TYPE
-# order by a.ID;
+# SELECT fi.ID, ninfo.FISH_NAME ,fi.LENGTH
+# FROM FISH_INFO fi
+# join FISH_NAME_INFO ninfo
+# on fi.FISH_TYPE = ninfo.FISH_TYPE
+# WHERE fi.LENGTH =(
+#     SELECT MAX(LENGTH)
+#     FROM FISH_INFO
+#     WHERE FISH_TYPE = fi.FISH_TYPE
+# )
 
 
-select a.ID, b.FISH_NAME, a.LENGTH
-from FISH_INFO a
-join FISH_NAME_INFO b
-on a.FISH_TYPE = b.FISH_TYPE
-where a.FISH_TYPE in 
+select i.ID, ni.FISH_NAME, i.LENGTH
+from FISH_INFO i
+join FISH_NAME_INFO ni
+on i.FISH_TYPE = ni.FISH_TYPE
+where i.LENGTH in 
 (
-    select FISH_TYPE
+    select MAX(LENGTH)
     from FISH_INFO
-    group by FISH_TYPE
-    having LENGTH = max(LENGTH)
+    where FISH_TYPE = i.FISH_TYPE
 )
-
