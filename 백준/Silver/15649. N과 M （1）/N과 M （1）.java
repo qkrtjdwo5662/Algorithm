@@ -4,40 +4,32 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    public static int n;
-    public static int m;
-    public static StringBuilder sb;
-    public static boolean[] visited;
+    static boolean[] visited;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        sb = new StringBuilder();
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
 
-        // n개의 자연수 중에서 중복 없이 m개를 고른다.
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
-        visited = new boolean[n+1];
-        dfs(0, "");
-        System.out.println(sb);
+        visited = new boolean[n + 1];
+        backtrack(n, m, 0, "");
+
     }
 
-    public static void dfs(int depth, String s){
+    static void backtrack(int n, int m, int depth, String s){
         if(depth == m){
-            sb.append(s).append("\n");
+            System.out.println(s);
+            return;
         }
 
         for (int i = 1; i <= n; i++) {
             if(!visited[i]){
                 visited[i] = true;
-                if(depth == 0){
-                    dfs(depth + 1, s+i);
-                }else{
-                    dfs(depth + 1, s+" "+i);
-                }
-
+                backtrack(n, m, depth + 1, s +i + " ");
                 visited[i] = false;
             }
+
         }
     }
 }
