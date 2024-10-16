@@ -45,20 +45,20 @@ public class Main {
         boolean[][] visited = new boolean[n][n];
         pq.add(new int[]{0, 0, 0});
         dist[0][0] = 0;
-        visited[0][0] = true;
 
         while(!pq.isEmpty()){
             int[] now = pq.poll();
             int nowY = now[0];
             int nowX = now[1];
+
+            if(visited[nowY][nowX]) continue;
+            visited[nowY][nowX] = true;
+
             for (int i = 0; i < 4; i++) {
                 int r = now[0] + ry[i];
                 int c = now[1] + rx[i];
 
                 if(r < 0 || c < 0 || r>= n || c >= n) continue;
-
-                if(visited[r][c]) continue;
-                visited[r][c] = true;
 
                 if(dist[r][c] > dist[nowY][nowX]){
                     if(map[r][c] == 1){
