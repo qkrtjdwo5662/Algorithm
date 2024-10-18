@@ -1,49 +1,38 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-    static class Counsel{
-        int time;
-        int pay;
-        public Counsel(int time, int pay){
-            this.time = time;
-            this.pay = pay;
-        }
-    }
-
-    static Counsel[] counselArr;
+    static int n;
+    static int[][] arr;
+    static int[] dp;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         StringBuilder sb = new StringBuilder();
 
-        int n = Integer.parseInt(st.nextToken());
-
-        int[] dp = new int[1_500_051]; // 주어진 상담날짜에 최대 이익
-        counselArr = new Counsel[n + 1];
+        n = Integer.parseInt(st.nextToken());
+        arr = new int[n + 1][2];
+        dp = new int[1_500_051];
         for (int i = 1; i <= n; i++) {
             st = new StringTokenizer(br.readLine());
-            int time = Integer.parseInt(st.nextToken());
-            int pay = Integer.parseInt(st.nextToken());
 
-            Counsel counsel = new Counsel(time, pay);
-            counselArr[i] = counsel;
+            for (int j = 0; j < 2; j++) {
+                int num = Integer.parseInt(st.nextToken());
+                arr[i][j] = num;
+            }
         }
 
         for (int i = 1; i <= n ; i++) {
-            Counsel now = counselArr[i];
-            int time = now.time;
-            int pay = now.pay;
+            dp[i] = Math.max(dp[i], dp[i - 1]);
 
-            if(dp[i] < dp[i - 1]){
-                dp[i] = dp[i - 1];
-            }
-
-            dp[i + time - 1] = Math.max(dp[i + time - 1], dp[i - 1] + pay);
+            dp[i + arr[i][0] - 1] = Math.max(dp[i + arr[i][0] - 1], dp[i - 1] + arr[i][1]);
         }
 
-        System.out.println(dp[n]);
+        sb.append(dp[n]).append("\n");
+        System.out.println(sb);
     }
+
 }
