@@ -1,91 +1,97 @@
-import java.util.ArrayDeque;
-
+import java.util.*;
 class Solution {
+    // . 빈
+    // R 처음 위치
+    // G 목표 지점
+    static int[][] map;
+    static int[] ry = {0, 1, 0, -1};
+    static int[] rx = {1, 0, -1, 0};
     static int n;
     static int m;
-    static int[][] newBoard;
     static boolean[][][] visited;
-    static ArrayDeque<int[]> deque;
-    static int[] ry = {0, 0, 1, 0, -1};
-    static int[] rx = {0, 1, 0, -1, 0};
-    static int solution(String[] board){
+    static int[] start;
+    static int[] end;
+    
+    public int solution(String[] board) {
         int answer = 0;
-
+        
         n = board.length;
         m = board[0].length();
-        newBoard = new int[n][m];
-        visited = new boolean[n][m][5];
-        //"R"은 로봇의 처음 위치를, 1
-        // "D"는 장애물의 위치를, -1
-        // "G"는 목표지점을  2
-        deque = new ArrayDeque<>();
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                char c = board[i].charAt(j);
+        map = new int[n][m];
+        start = new int[2];
+        end = new int[2];
+        for(int i=0; i<n; i++){
+            String s = board[i];
+            for(int j=0; j<m; j++){
+                char c = s.charAt(j);
                 if(c == 'R'){
-                    deque.addLast(new int[]{i, j, 0, 0});
-                    visited[i][j][0] = true;
+                    map[i][j] = 1;
+                    start[0] = i;
+                    start[1] = j;
                 }else if(c == 'D'){
-                    newBoard[i][j] = -1;
+                    map[i][j] = -1;
                 }else if(c == 'G'){
-                    newBoard[i][j] = 2;
+                    map[i][j] = 2;
+                    end[0] = i;
+                    end[1] = j;
                 }
-            }
+            }    
         }
-
-        answer = bfs();
+        
+        visited = new boolean[n][m][4];
+        answer = bfs(start[0], start[1]);
+        if(answer == 0) return -1;
+        
         return answer;
     }
-
-    static int bfs(){
+    
+    static int bfs(int startY ,int startX){
+        ArrayDeque<int[]> deque = new ArrayDeque<>();
+        deque.addLast(new int[]{startY, startX, 0});
+        visited[startY][startX][0] = true;
+        visited[startY][startX][1] = true;
+        visited[startY][startX][2] = true;
+        visited[startY][startX][3] = true;
+        
         while(!deque.isEmpty()){
             int[] now = deque.pollFirst();
             int y = now[0];
             int x = now[1];
-            int direction = now[2];
-            int distance = now[3];
-//            System.out.println(y + " " + x + " " + direction + " " + distance);
-            if(newBoard[y][x] == 2) return distance;
-            for (int i = 1; i <= 4; i++) {
-                int[] pos = go(now, i);
-                int r = pos[0];
-                int c = pos[1];
-
-                if( r < 0 || c < 0 || r >= n || c>= m) continue;
-
-                if(newBoard[r][c] == -1) continue;
-
-                if(r == y && c == x) continue;
+            int count = now[2];
+            
+            if(y == end[0] && x == end[1]) return count;
+            
+            for(int i=0; i<4; i++){
+                int[] move = go(y, x, i);
                 
-                if(!visited[r][c][i]){
-                    visited[r][c][i] = true;
-                    deque.addLast(new int[]{r, c, i, distance + 1});
-                }
+                int r = move[0];
+                int c = move[1];
+                        
+                if(visited[r][c][i]) continue;
+                visited[r][c][i] = true;
+                deque.addLast(new int[]{r, c, count + 1});
+                
             }
         }
-
-        return -1;
+        
+        return 0;
     }
-
-    static int[] go(int[] now, int d){
-        int r = now[0];
-        int c = now[1];
-        int tempR = 0;
-        int tempC = 0;
-        while(true){
-            tempR = r;
-            tempC = c;
-
-            r += ry[d];
-            c += rx[d];
-
-            if(r < 0 || c < 0 || r >= n || c>= m) return new int[]{ tempR,  tempC };
-
-            if(newBoard[r][c] == -1) return new int[]{ tempR,  tempC };
-
-        }
-
     
+    static int[] go(int y, int x, int d){
+        while(true){
+            int nowY = y;
+            int nowX = x;
+            
+            nowY += ry[d];
+            nowX += rx[d];
+            
+            if(nowY < 0 || nowX < 0 || nowY>= n || nowX>= m) break;
+            
+            if(map[nowY][nowX] == -1) break;
+            y = nowY;
+            x = nowX;
+        }
+        
+        return new int[]{y, x};
     }
 }
