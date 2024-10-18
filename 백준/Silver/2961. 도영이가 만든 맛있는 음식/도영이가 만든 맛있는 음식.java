@@ -1,50 +1,42 @@
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-	static int n;
-	static int[] sourArr;
-	static int[] bitterArr;
-	static int answer;
-	public static void main(String[] args) throws IOException {
-		
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		StringBuilder sb = new StringBuilder();
-		
-		n = Integer.parseInt(st.nextToken());
-		
-		sourArr = new int[n];
-		bitterArr = new int[n];
-		
-		for (int i = 0; i < n; i++) {
-			st = new StringTokenizer(br.readLine());
-			
-			int sour = Integer.parseInt(st.nextToken());
-			int bitter = Integer.parseInt(st.nextToken());
-			
-			sourArr[i] = sour;
-			bitterArr[i] = bitter;
-		}
-		
-		answer = 1_000_000_000;
-		dfs(1, 0, 0);
-		System.out.println(answer);
-		
-	}
-	
-	public static void dfs(int totalSour, int totalBitter, int depth) {
-		if(depth == n) {
-			if(totalSour == 1 || totalBitter == 0) return;
-			answer = Math.min(answer, Math.abs(totalSour - totalBitter));
-			return ;
-		}
-		
-		dfs(totalSour*sourArr[depth], totalBitter + bitterArr[depth], depth+1);
-		dfs(totalSour, totalBitter, depth+1);
-		
-	}
+    static int n;
+    static int[][] arr;
+    static int answer;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        StringBuilder sb = new StringBuilder();
+
+        n = Integer.parseInt(st.nextToken());
+        arr = new int[n][2];
+
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < 2; j++) {
+                int num = Integer.parseInt(st.nextToken());
+                arr[i][j] = num;
+            }
+        }
+
+        answer = Integer.MAX_VALUE;
+        dfs(0, 1, 0, 0);
+        sb.append(answer).append("\n");
+        System.out.println(sb);
+    }
+
+    static void dfs(int depth, int a, int b, int count){
+        if(depth == n ){
+            if(count > 0){
+                answer = Math.min(answer, Math.abs(a - b));
+            }
+            return;
+        }
+        dfs(depth + 1, a, b, count);
+        dfs(depth + 1, a * arr[depth][0], b + arr[depth][1], count + 1);
+    }
 }
