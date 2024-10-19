@@ -1,11 +1,15 @@
-select ID, 
-    (
-        case
-        when rank() over (order by SIZE_OF_COLONY desc) <= (select count(*) from ECOLI_DATA) * 1/4 then 'CRITICAL'
-        when rank() over (order by SIZE_OF_COLONY desc) <= (select count(*) from ECOLI_DATA) * 2/4 then 'HIGH'
-        when rank() over (order by SIZE_OF_COLONY desc) <= (select count(*) from ECOLI_DATA) * 3/4 then 'MEDIUM'
-        else 'LOW'
-        end
-    )as COLONY_NAME
-from ECOLI_DATA
-order by ID;
+-- 코드를 작성해주세요
+select a.ID,
+case
+    when b.per <= 0.25 then 'CRITICAL'
+    when b.per <= 0.5 then 'HIGH'
+    when b.per <= 0.75 then 'MEDIUM'
+    else 'LOW'
+end as COLONY_NAME
+from ECOLI_DATA a
+left join
+(
+SELECT ID, PERCENT_RANK() OVER (ORDER BY SIZE_OF_COLONY desc) AS per
+FROM ECOLI_DATA
+) as b
+on a.ID = b.ID
