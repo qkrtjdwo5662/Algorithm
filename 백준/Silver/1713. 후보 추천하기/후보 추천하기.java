@@ -1,54 +1,13 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.Buffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class Main {
-    static class Hubo implements Comparable<Hubo>{
-        int num;
-        int index;
-        int count;
-
-        public Hubo(int num){
-            this.num = num;
-            this.count = 1;
-        }
-        @Override
-        public int compareTo(Hubo hubo){
-            if(this.count > hubo.count){
-                return 1;
-            }else if(this.count < hubo.count){
-                return -1;
-            }else{
-                if(this.index > hubo.index){
-                    return 1;
-                }else{
-                    return -1;
-                }
-
-            }
-        }
-    }
-
-    static List<Hubo> list;
     public static void main(String[] args) throws IOException {
-        // 3
-        // 2 1 4 3 5 6 2 7 2
-
-        // 2
-        // 2 1
-        // 2 1 4
-        // 1 4 3 // 2삭제
-        // 4 3 5 // 1삭제
-        // 3 5 6 // 4삭제
-        // 5 6 2 // 3삭제
-        // 6 2 7 // 5삭제
-        // 6 2 7 //
-
-        // 1. 추천 수가 가장 적은 학생 먼저 제거
-        // 2. 게시된지 가장 오래된 사진 삭제
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         StringBuilder sb = new StringBuilder();
@@ -56,51 +15,44 @@ public class Main {
         int n = Integer.parseInt(st.nextToken());
 
         st = new StringTokenizer(br.readLine());
-        int m = Integer.parseInt(st.nextToken()); // 전체 추천 수
+        int m = Integer.parseInt(st.nextToken());
 
-        list = new ArrayList<>();
         st = new StringTokenizer(br.readLine());
+        List<Integer> list = new ArrayList<>();
+        int[] countArr = new int[101]; // 학생들의 추천 수 count
+
         for (int i = 0; i < m; i++) {
             int num = Integer.parseInt(st.nextToken());
 
-            Hubo hubo = new Hubo(num);
-
-
-            int findIndex = isContain(num);
-            if(findIndex >=0){
-                list.get(findIndex).count ++;
-                Collections.sort(list);
-                continue;
+            if(!list.contains(num)){
+                list.add(num);
             }
 
-            hubo.index = i;
-            list.add(hubo);
+            countArr[num] ++;
 
             if(list.size() > n){
-                list.remove(0);
-            }
-            Collections.sort(list);
+                int min = Integer.MAX_VALUE;
 
+                for (int j = 0; j < list.size() - 1; j++) {
+                    min = Math.min(min, countArr[list.get(j)]); // count 최솟값 도출
+                }
+
+                int index = 0;
+                for (int j = 0; j < list.size() - 1; j++) {
+                    if(min == countArr[list.get(j)]){
+                        index = j;
+                        break;
+                    }
+                }
+                countArr[list.get(index)] = 0;
+                list.remove(index);
+            }
         }
 
-        Collections.sort(list, (o1, o2) -> {
-            return Integer.compare(o1.num, o2.num);
-        });
-
-        for (Hubo hubo: list) {
-            sb.append(hubo.num).append(" ");
+        Collections.sort(list);
+        for (int i = 0; i < list.size(); i++) {
+            sb.append(list.get(i)).append(" ");
         }
         System.out.println(sb);
-
-    }
-
-    static int isContain(int num){
-        for(int i=0; i<list.size(); i++){
-            if(num == list.get(i).num){
-                return i;
-            }
-        }
-
-        return -1;
     }
 }
