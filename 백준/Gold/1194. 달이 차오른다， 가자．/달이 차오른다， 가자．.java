@@ -2,18 +2,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Main {
     static int n;
     static int m;
-    static char[][] board;
-    static HashMap<Character, Character> map;
-    static HashSet<Character> keySet;
-    static int[] ry = {0, 0, 1, -1};
-    static int[] rx = {1, -1, 0, 0};
+    static char[][] map;
+    static int[] ry = {0, 1, 0, -1};
+    static int[] rx = {1, 0, -1, 0};
+
+    static Set<Character> door;
+    static Set<Character> key;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -22,106 +23,100 @@ public class Main {
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
 
-        board = new char[n][m];
-        map =new HashMap<>(); // 문 & 열쇠
-        map.put('A', 'a');
-        map.put('B', 'b');
-        map.put('C', 'c');
-        map.put('D', 'd');
-        map.put('E', 'e');
-        map.put('F', 'f');
+        map = new char[n][m];
 
-        keySet = new HashSet<>();
-        keySet.add('a');
-        keySet.add('b');
-        keySet.add('c');
-        keySet.add('d');
-        keySet.add('e');
-        keySet.add('f');
+        int startY = -1;
+        int startX = -1;
 
-        int startY = - 1;
-        int startX = - 1;
+        key = new HashSet<>();
+        door = new HashSet<>();
+
+        key.add('a');
+        key.add('b');
+        key.add('c');
+        key.add('d');
+        key.add('e');
+        key.add('f');
+
+        door.add('A');
+        door.add('B');
+        door.add('C');
+        door.add('D');
+        door.add('E');
+        door.add('F');
+
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             String s = st.nextToken();
             for (int j = 0; j < m; j++) {
-                board[i][j] = s.charAt(j);
+                char c = s.charAt(j);
 
-                if(board[i][j] == '0'){
+                map[i][j] = c;
+
+                if(c == '0'){
                     startY = i;
                     startX = j;
                 }
             }
         }
 
-        // 0 : 시작
-        // 1 : 탈출구
-        // a, b, c, d, e, f : 열쇠
-        // A, B, C, D, E, F : 문
-        // # : 벽
-        // . : 빈칸
-
-        int answer= bfs(startY, startX);
+        int answer = bfs(startY, startX);
         sb.append(answer).append("\n");
         System.out.println(sb);
 
     }
 
     static int bfs(int y, int x){
-        ArrayDeque<int[]> deque = new ArrayDeque<>();
         boolean[][][] visited = new boolean[n][m][64];
         visited[y][x][0] = true;
-        deque.addLast(new int[]{y, x, 0, 0});
+        map[y][x] = '.';
+        ArrayDeque<int[]> deque = new ArrayDeque<>();
+        deque.addLast(new int[] {y, x, 0, 0});
 
         while(!deque.isEmpty()){
             int[] now = deque.pollFirst();
 
             int ny = now[0];
             int nx = now[1];
-            int dist = now[2];
-            int key = now[3];
+            int d = now[2];
+            int info = now[3];
 
-//            System.out.println(ny + " " + nx + " " + dist + " " + key);
-            if(board[ny][nx] == '1') return dist;
+//            System.out.println(ny + " " + nx + " " + info);
+            if(map[ny][nx] == '1') return d;
 
             for (int i = 0; i < 4; i++) {
                 int r = ny + ry[i];
                 int c = nx + rx[i];
 
-                if(r < 0 || c < 0 || r>= n || c>= m) continue;
+                if(r < 0 || c < 0 || r >= n || c >= m) continue;
 
-                char info = board[r][c];
+                if(map[r][c] == '#') continue;
 
-                if(info == '#') continue; // 벽이요
+                if(visited[r][c][info]) continue;
 
-                if(map.containsKey(info)){
-                    // 문이요
-                    if(((1 << map.get(info)-'a') & key) == (1 << map.get(info)-'a')){
-
-                        if(!visited[r][c][key]){
-                            visited[r][c][key] = true;
-                            deque.addLast(new int[]{r, c, dist + 1, key});
-                        }
-
-                    }else{
-                        continue;
-                    }
-                }else if(keySet.contains(info)){ // 요놈이 키면
-                    int change = key | 1 << info -'a';  // key 보유처리
-                    if(!visited[r][c][change]){
-                        visited[r][c][change] = true;
-                        deque.addLast(new int[]{r, c, dist + 1, change});
-                    }
-                }else {
-                    if(!visited[r][c][key]){
-                        visited[r][c][key] = true;
-                        deque.addLast(new int[]{r, c, dist + 1, key});
+                if(door.contains(map[r][c])){
+                    if((info & (1 << (map[r][c] - 'A'))) == (1 << (map[r][c] - 'A'))){ // 해당 열쇠 가지고 있는지 info and (1 << bit)
+                        visited[r][c][info] = true;
+                        deque.addLast(new int[]{r, c, d + 1, info});
                     }
                 }
+
+                if(key.contains(map[r][c])){
+//                    info = info | 1 << (map[r][c] - 'a'); // 열쇠를 가지게 됨
+                    deque.addLast(new int[]{r, c, d + 1, info | 1 << (map[r][c] - 'a')});
+                    visited[r][c][info | 1 << (map[r][c] - 'a')] = true;
+                }
+
+                if(map[r][c] == '.' || map[r][c] == '1'){
+                    visited[r][c][info] = true;
+                    deque.addLast(new int[]{r, c, d + 1, info});
+                }
+
 
             }
         }
 
         return -1;
     }
+
 }
