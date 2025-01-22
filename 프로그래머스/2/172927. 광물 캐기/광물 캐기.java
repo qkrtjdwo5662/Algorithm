@@ -27,8 +27,8 @@ class Solution {
         numMap.put("iron", 2);
         numMap.put("stone", 3);
         
-        pointMap.put("diamond", 100);
-        pointMap.put("iron", 10);
+        pointMap.put("diamond", 25);
+        pointMap.put("iron", 5);
         pointMap.put("stone", 1);
         
         
