@@ -8,39 +8,41 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         StringBuilder sb = new StringBuilder();
-        
-        int n = Integer.parseInt(st.nextToken()); // 스태프의 수
-        int m = Integer.parseInt(st.nextToken()); // 만들고자 하는 풍선의 개수
 
-        int[] staff = new int[n];
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
 
         st = new StringTokenizer(br.readLine());
-        int min = Integer.MAX_VALUE;
+        int[] arr = new int[n];
+        long max = 0;
         for (int i = 0; i < n; i++) {
             int num = Integer.parseInt(st.nextToken());
-            staff[i] = num;
-            min = Math.min(min, num);
+            arr[i] = num;
+            max = Math.max(max, num);
         }
 
-        long left = 0;
-        long right = (long) min * m;
+        long left = 1;
+        long right = max * m;
+        long answer = 0;
+        while(left <= right){
+            long mid = (left + right) / 2;
 
-        while(left + 1 < right){
-            long center = (left + right) / 2;
-            long balloon = 0;
+            long count = 0;
 
             for (int i = 0; i < n; i++) {
-                balloon += (center / staff[i]);
+                count += mid/arr[i];
             }
 
-            if(balloon >= m){
-                right = center;
+            if(count >= m){ // 더 많으면? 줄일 수 있음 -> 조건은 일단 부합함
+                right = mid - 1;
+                answer = mid;
             }else{
-                left = center;
+                left = mid + 1;
             }
         }
 
-        sb.append(right).append("\n");
+        sb.append(answer).append("\n");
         System.out.println(sb);
+
     }
 }
