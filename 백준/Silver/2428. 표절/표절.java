@@ -11,36 +11,35 @@ public class Main {
         StringBuilder sb = new StringBuilder();
 
         int n = Integer.parseInt(st.nextToken());
-        int[] arr = new int[n];
-
         st = new StringTokenizer(br.readLine());
+        int[] arr = new int[n];
         for (int i = 0; i < n; i++) {
             int num = Integer.parseInt(st.nextToken());
             arr[i] = num;
         }
 
-        long sum = 0;
-        // size(Fj)*0.9 <= size(Fi) <= size(Fj)
+        // n명의 참가자가 솔루션파일을 각자 하나씩 제출했음
+        // 채점 결과 발표하기전 표절검사를 실시한다.
+        // 모든쌍을 검사하지 않고 두파일이 있을때 작은 파일의 크기가 큰 파일의 크기의 90%보다 클때 검사함
 
         Arrays.sort(arr);
+        long answer = 0;
         for (int i = 0; i < n; i++) {
             int left = i + 1;
-            int right = n-1;
-            int index = i;
-            while(left  <= right){
-                int mid = (left + right) / 2;
+            int right = n - 1;
+            int max = i;
 
-                if(arr[i] * 10 >= arr[mid] * 9){
+            while(left <= right){
+                int mid = (left + right) / 2;
+                if(arr[mid] * 9 <= arr[i] * 10){
+                    max = mid;
                     left = mid + 1;
-                    index = mid;
                 }else right = mid - 1;
             }
 
-            sum += (index - i);
+            answer += (max - i);
         }
 
-        sb.append(sum).append("\n");
-        System.out.println(sb);
-        
+        System.out.println(answer);
     }
 }
