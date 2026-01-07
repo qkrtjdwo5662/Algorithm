@@ -24,14 +24,14 @@ public class Main {
             value[i] = Integer.parseInt(st.nextToken());
         }
 
-        int answer = 0;
+        long answer = 0;
         int min = Integer.MAX_VALUE;
         for (int i = 0; i < n - 1; i++) {
             if(value[i] < min) {
                 min = value[i];
 
             }
-            answer += min * distance[i];
+            answer += (long)min * distance[i];
         }
         System.out.println(answer);
 
