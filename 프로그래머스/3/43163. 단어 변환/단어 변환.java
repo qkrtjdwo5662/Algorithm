@@ -1,77 +1,63 @@
+import java.util.*;
+
 class Solution {
+    static HashSet<String> set;
     static int answer;
+    static boolean[] visited;
+    
+    static String begin;
     static String target;
     static String[] words;
     
-    static boolean[] visited;
-    static int n;
     public int solution(String begin, String target, String[] words) {
-        answer = 100;
-        n = words.length;
-        this.words = words;
+        answer = Integer.MAX_VALUE;
+        visited = new boolean[words.length];
         this.target = target;
-        visited = new boolean[n];
+        this.begin = begin;
+        this.words = words;
         
-        boolean flag = false;
+        set = new HashSet();
+        
         for(int i=0; i<words.length; i++){
-            String word = words[i];
-            
-            if(word.equals(target)) flag = true;
+            set.add(words[i]);
         }
         
-        if(!flag) return 0;
+        if(!set.contains(target)) return 0; // 안될거 같으면 버려
         
-        // dfs(begin, 0, 0);
-        backtrack(begin, 0);
+        for(int i=0; i<words.length; i++){
+            if(diff(words[i], begin) == 1){
+                visited[i] = true;
+                dfs(i, 1);
+                visited[i] = false;
+            }
+        }
+        
         return answer;
     }
-    static void backtrack(String now, int count){
-        if(now.equals(target)){
+    
+    static void dfs(int n, int count){
+        if(words[n].equals(target)){
             answer = Math.min(answer, count);
             return;
         }
         
-        for(int i=0; i<n; i++){
-            if(!visited[i]){
-                if(count(now, words[i]) == 1){
-                    visited[i] = true;
-                    backtrack(words[i], count + 1);
-                    visited[i] = false;
-                }
+        for(int i=0; i<words.length; i++){
+            if(!visited[i] && diff(words[n], words[i]) == 1){
+                // 방문하지 않았고, 차이가 1만큼 나면 돌려
+                visited[i] = true;
+                dfs(i, count + 1);
+                visited[i] = false;
             }
         }
     }
     
-    
-    static void dfs(String now, int depth, int count){
-        if(now.equals(target)){
-            answer = Math.min(answer, count);
-            return;
+    static int diff(String s1, String s2){
+        int count = 0;
+        
+        for(int i=0; i<s1.length(); i++){
+            if(s1.charAt(i) != s2.charAt(i)) count ++;
         }
         
-        if(depth == n){
-            if(now.equals(target)){
-                answer = Math.min(answer, count);
-            }
-            return;
-        }
-        
-        
-        if(count(now, words[depth]) == 1){
-            dfs(words[depth], depth + 1, count + 1);
-            dfs(now, depth + 1, count);
-        }else dfs(now, depth + 1, count);
-        
-    }
-    
-    static int count(String now, String compareStr){
-        int a = 0;
-    
-        
-        for(int i=0; i<now.length(); i++){
-            if(now.charAt(i) != compareStr.charAt(i)) a ++;
-        }
-        
-        return a;
+        return count;
     }
 }
