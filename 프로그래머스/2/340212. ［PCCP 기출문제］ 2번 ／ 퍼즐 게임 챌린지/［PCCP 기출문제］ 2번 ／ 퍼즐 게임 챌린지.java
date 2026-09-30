@@ -1,40 +1,41 @@
 class Solution {
     public int solution(int[] diffs, int[] times, long limit) {
         int answer = 0;
+        // 숙련도의 최솟값을 구해라. -> 양의 정수 
         
-        int n = diffs.length;
-        // 난이도의 범위 
         int left = 1;
         int right = 100_000;
-        
+        answer = right;
+        // 32번 X 30만
         while(left <= right){
-            int mid = (left + right)/2; // 현재 난이도
+            int mid = (left + right) / 2; // 숙련도라고 잡고
+            long total = 0;
+            for(int i=0; i<diffs.length; i++){
+                int diff = diffs[i];
+                int time_cur = times[i];
             
-            long total = times[0]; // 초기에는 무조건 난이도 1이니까 첫번째 퍼즐 푸는 시간 default로 잡아주면 됨
-            
-            for(int i=1; i<n; i++){
-                int diff = diffs[i]; // 현재 퍼즐 난이도
-                int time = times[i]; // 퍼즐 푸는데 걸리는 시간
-                
-                if(mid >= diff){
-                    total += time;
-                    
+                if(diff <= mid){
+                    total += time_cur;
                 }else{
-                    int count = diff - mid; // 틀림 카운트
+                    int time_prev = 0;
+                    if(i > 0){
+                        time_prev = times[i - 1];
+                    }
                     
-                    total += (time + times[i - 1]) * count + time;
+                    int count = diff - mid; // 틀린 횟수
+                    total += count* (time_prev + time_cur) + time_cur;
                 }
-                
-                
             }
             
-            if(total <= limit){ // 만족하니까 숙련도 더 낮춰
-                answer = mid; // 답 최신화
+            if(total > limit){
+                
+                left = mid + 1;
+            }else{ // 줄일 가능성이 생긴다
                 right = mid - 1;
-            }else{
-                left = mid + 1; // 숙련도 좀 더 올려야함
+                answer = mid;
             }
         }
+        
         
         return answer;
     }
