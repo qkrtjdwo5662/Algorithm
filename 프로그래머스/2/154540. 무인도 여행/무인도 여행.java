@@ -1,84 +1,95 @@
 import java.util.*;
 
 class Solution {
-    static int[][] map;
+    static String[] maps;
     static int n;
     static int m;
+    static int[][] info;
+    
     static boolean[][] visited;
-    static int[] ry = {0, 1, 0 ,-1};
-    static int[] rx = {1, 0, -1, 0};
+    
+    static int[] dy = {1, 0, -1, 0};
+    static int[] dx = {0, 1, 0, -1};
+    
+    static PriorityQueue<Integer> pq;
     
     public int[] solution(String[] maps) {
+        
         n = maps.length;
         m = maps[0].length();
+        this.maps = maps;
         
-        map = new int[n][m];
+        info = new int[n][m];
+        
+        // pq test
+        pq = new PriorityQueue<>((o1, o2) -> {
+            return Integer.compare(o1, o2);
+        });
         for(int i=0; i<n; i++){
             String s = maps[i];
             for(int j=0; j<m; j++){
-                char c = s.charAt(j);
-                
-                if(c != 'X'){
-                    map[i][j] = c - '0';
+                if(s.charAt(j) != 'X'){
+                    info[i][j] = s.charAt(j) - '0';    
                 }
             }
         }
+        
+        //System.out.println(Arrays.deepToString(info));
         
         visited = new boolean[n][m];
         
-        List<Integer> list = new ArrayList<>();
         for(int i=0; i<n; i++){
             for(int j=0; j<m; j++){
-                if(!visited[i][j] && map[i][j]!= 0){
-                    int sum = bfs(i, j);
-                    list.add(sum);
+                if(info[i][j] != 0 && !visited[i][j]){ // X아니고 방문안했으면 ㄱ
+                   bfs(i, j); 
                 }
-                
             }
         }
         
-        if(list.size() == 0){
-            return new int[]{-1};
+        if(pq.size() == 0) return new int[]{-1};
+        int[] answer = new int[pq.size()];
+        int index = 0;
+        while(!pq.isEmpty()){
+            answer[index ++] = pq.poll();
         }
-        else{
-            int[] answer = new int[list.size()];
-            for(int i=0; i<list.size(); i++){
-                answer[i] = list.get(i);
-            }
-            Arrays.sort(answer);
-            
-            return answer;        
-        }
-    
+        
+        
+        
+        return answer;
     }
     
-    static int bfs(int startY, int startX){
-        int answer = 0;
+    static void bfs(int y, int x){
+        //System.out.println(y + " " + x);
         ArrayDeque<int[]> deque = new ArrayDeque<>();
-        deque.addLast(new int[]{startY, startX});
-        visited[startY][startX] = true;
+        int num = 0;
+        deque.addLast(new int[]{y, x});
+        visited[y][x] = true;
+        
+        num += info[y][x];
         
         while(!deque.isEmpty()){
             int[] now = deque.pollFirst();
             
-            answer += map[now[0]][now[1]];
-            
+            int r = now[0];
+            int c = now[1];
             for(int i=0; i<4; i++){
-                int r = now[0] + ry[i];
-                int c = now[1] + rx[i];
+                int nr = r + dy[i];
+                int nc = c + dx[i];
                 
-                if(r < 0 || c< 0 || r>= n || c>= m) continue;
+                if(nr < 0 || nc < 0 || nr >= n || nc >= m) continue;
                 
-                if(map[r][c] == 0) continue;
+                if(info[nr][nc] == 0) continue;
                 
-                if(visited[r][c]) continue;
-                
-                visited[r][c] = true;
-                deque.addLast(new int[]{r, c});
+                if(!visited[nr][nc]){
+                    visited[nr][nc] = true;
+                    deque.addLast(new int[]{nr, nc});
+                    
+                    num += info[nr][nc];
+                }
             }
         }
         
-        
-        return answer;
+        pq.add(num);
+        //System.out.println(num);
     }
 }
