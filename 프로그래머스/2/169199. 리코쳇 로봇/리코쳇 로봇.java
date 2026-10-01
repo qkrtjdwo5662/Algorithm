@@ -1,97 +1,124 @@
 import java.util.*;
+
 class Solution {
-    // . 빈
-    // R 처음 위치
-    // G 목표 지점
-    static int[][] map;
-    static int[] ry = {0, 1, 0, -1};
-    static int[] rx = {1, 0, -1, 0};
+    static int[][] info;
     static int n;
     static int m;
-    static boolean[][][] visited;
-    static int[] start;
-    static int[] end;
+    static int[] pos;
+    static int[] target;
     
+    static int[] dy = {0, 1, 0, -1};
+    static int[] dx = {1, 0, -1, 0};
+    
+    static int[][] distance;
     public int solution(String[] board) {
-        int answer = 0;
+        // 시작 위치에서 출발해서 목표위치까지 최소 몇번 이동?
+        // 이동하면서 몇번 이동했는지도 같이 기록
+        // 한번 이동하기 시작하면 쭉 이동
         
         n = board.length;
         m = board[0].length();
-        map = new int[n][m];
-        start = new int[2];
-        end = new int[2];
+        
+        info = new int[n][m];
+        distance = new int[n][m];
+        pos = new int[2];
+        target = new int[2];
+        
         for(int i=0; i<n; i++){
             String s = board[i];
             for(int j=0; j<m; j++){
+                distance[i][j] = Integer.MAX_VALUE;
                 char c = s.charAt(j);
-                if(c == 'R'){
-                    map[i][j] = 1;
-                    start[0] = i;
-                    start[1] = j;
-                }else if(c == 'D'){
-                    map[i][j] = -1;
-                }else if(c == 'G'){
-                    map[i][j] = 2;
-                    end[0] = i;
-                    end[1] = j;
-                }
-            }    
-        }
-        
-        visited = new boolean[n][m][4];
-        answer = bfs(start[0], start[1]);
-        if(answer == 0) return -1;
-        
-        return answer;
-    }
-    
-    static int bfs(int startY ,int startX){
-        ArrayDeque<int[]> deque = new ArrayDeque<>();
-        deque.addLast(new int[]{startY, startX, 0});
-        visited[startY][startX][0] = true;
-        visited[startY][startX][1] = true;
-        visited[startY][startX][2] = true;
-        visited[startY][startX][3] = true;
-        
-        while(!deque.isEmpty()){
-            int[] now = deque.pollFirst();
-            int y = now[0];
-            int x = now[1];
-            int count = now[2];
-            
-            if(y == end[0] && x == end[1]) return count;
-            
-            for(int i=0; i<4; i++){
-                int[] move = go(y, x, i);
                 
-                int r = move[0];
-                int c = move[1];
-                        
-                if(visited[r][c][i]) continue;
-                visited[r][c][i] = true;
-                deque.addLast(new int[]{r, c, count + 1});
+                if(c == '.'){
+                    continue;
+                }
+                else if(c == 'D'){ // 장애물
+                    info[i][j] = -1;
+                }
+                else if(c == 'R'){ // 초기 위치
+                    pos[0] = i;
+                    pos[1] = j;
+                }
+                else if(c == 'G'){ // 목표지점
+                    info[i][j] = 10;
+                }
                 
             }
         }
         
-        return 0;
+        // test
+        // go(0, 0, 1); // [2, 0] 
+        // go(2, 0, 0); // [2, 3]
+        
+        //System.out.println(Arrays.deepToString(distance));
+        int answer = bfs(pos[0], pos[1]);
+        
+        //System.out.println(Arrays.deepToString(distance));
+        return answer;
+    }
+    
+    static int bfs(int y, int x){
+        int answer = 0;
+    
+        PriorityQueue<int[]> pq = new PriorityQueue<>(
+        (o1, o2) -> Integer.compare(o1[2], o2[2]));
+        pq.add(new int[]{y, x, 0});
+        distance[y][x] = 0;
+        
+        while(!pq.isEmpty()){
+            int[] now = pq.poll();
+            
+            int r = now[0];
+            int c = now[1];
+            int d = now[2];
+            
+            if(info[r][c] == 10) return d;
+            
+            for(int i=0; i<4; i++){
+                int[] next = go(r, c, i);
+                
+                int nr = next[0];
+                int nc = next[1];
+                
+                if(d + 1 < distance[nr][nc]){
+                    distance[nr][nc] = d + 1;
+                    pq.add(new int[] {nr, nc, d + 1});
+                }
+            }
+        }
+        return -1;
     }
     
     static int[] go(int y, int x, int d){
+        // 현재 위치에서 장애물이나 벽에 부딪힐때까지 이동
+        int[] result = new int[2];
+        
+        int ny = y;
+        int nx = x;
+        
+        result[0] = y;
+        result[1] = x;
+        
         while(true){
-            int nowY = y;
-            int nowX = x;
+            ny = ny + dy[d];
+            nx = nx + dx[d];
             
-            nowY += ry[d];
-            nowX += rx[d];
+            if(ny < 0 || nx < 0 || ny >= n || nx >= m){
+                // 넘치면
+                break;
+            }
             
-            if(nowY < 0 || nowX < 0 || nowY>= n || nowX>= m) break;
+            if(info[ny][nx] == -1){
+                // 장애물 만나면
+                break;
+            }
             
-            if(map[nowY][nowX] == -1) break;
-            y = nowY;
-            x = nowX;
+            result[0] = ny;
+            result[1] = nx;
         }
         
-        return new int[]{y, x};
+        //System.out.println(Arrays.toString(result));
+        return result;
     }
 }
